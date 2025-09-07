@@ -1,0 +1,1 @@
+export const API_BASE_URL = (window.localStorage.getItem('apiBase') || 'https://cucaproject-cucaproject1.up.railway.app/').replace(/\/+$/,'');

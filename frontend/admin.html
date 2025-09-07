@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuca - Painel de Administração</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script> <!-- Manter Tailwind para utilitários adicionais -->
+    <!-- Scripts JavaScript como módulos -->
+    <script type="module" src="/static/js/utils.js"></script>
+    <script type="module" src="/static/js/session.js"></script>
+    <script type="module" src="/static/js/pageSpecific-admin.js"></script> <!-- Script específico para esta página -->
+</head>
+<body class="admin-page-body"> <!-- Adicionada classe para estilos de body específicos de admin -->
+
+    <div class="app-container">
+        <header class="admin-header">
+            <h1>Painel de Administração Cuca</h1>
+            <p id="admin-greeting">Bem-vindo(a), Admin!</p>
+        </header>
+
+        <main class="admin-main-content">
+            <section class="admin-cards-grid">
+                <div class="admin-card">
+                    <h2>Utilizadores Registados</h2>
+                    <p>Total de utilizadores na plataforma.</p>
+                    <span class="card-value" id="total-users">0</span>
+                </div>
+                <div class="admin-card">
+                    <h2>Depósitos Pendentes</h2>
+                    <p>Total de depósitos aguardando aprovação.</p>
+                    <span class="card-value" id="pending-deposits">0</span>
+                </div>
+                <div class="admin-card">
+                    <h2>Saques Pendentes</h2>
+                    <p>Total de saques aguardando aprovação.</p>
+                    <span class="card-value" id="pending-withdrawals">0</span>
+                </div>
+                <div class="admin-card">
+                    <h2>Investimentos Ativos</h2>
+                    <p>Total de investimentos em curso.</p>
+                    <span class="card-value" id="active-investments">0</span>
+                </div>
+                <div class="admin-card">
+                    <h2>Valor Total Investido</h2>
+                    <p>Soma de todos os investimentos ativos.</p>
+                    <span class="card-value" id="total-invested">Kz 0.00</span>
+                </div>
+                <div class="admin-card">
+                    <h2>Ganhos Totais (Utilizadores)</h2>
+                    <p>Soma dos ganhos gerados para utilizadores.</p>
+                    <span class="card-value" id="total-user-earnings">Kz 0.00</span>
+                </div>
+            </section>
+
+            <h2 class="section-title-admin">Gerir Depósitos</h2>
+            <section class="admin-list-container">
+                <ul id="deposits-list">
+                    <!-- Depósitos serão carregados aqui -->
+                    <li class="admin-list-item placeholder-item">Nenhum depósito pendente.</li>
+                </ul>
+            </section>
+
+            <h2 class="section-title-admin">Gerir Saques</h2>
+            <section class="admin-list-container">
+                <ul id="withdrawals-list">
+                    <!-- Saques serão carregados aqui -->
+                    <li class="admin-list-item placeholder-item">Nenhum saque pendente.</li>
+                </ul>
+            </section>
+
+            <div class="admin-actions">
+                <button class="action-main-button" id="logout-admin-button">Terminar Sessão Admin</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modais globais controlados por utils.js - estilos definidos em style.css ou utils.js -->
+    <div id="modal-backdrop" style="display: none;"></div>
+    <div id="message-box" style="display: none;">
+        <p id="message-text"></p>
+    </div>
+    <div id="loading-indicator" style="display: none;">
+        <div class="spinner"></div>
+        <p>A carregar...</p>
+    </div>
+
+</body>
+</html>

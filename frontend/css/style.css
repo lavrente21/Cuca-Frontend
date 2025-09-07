@@ -1,0 +1,1967 @@
+/* base.css - Arquivo CSS Consolidado */
+
+/* Paleta de Cores da Cuca:
+   - Vermelho Principal: #B32C1A
+   - Dourado/Amarelo: #FFC72C
+   - Branco: #FFFFFF
+   - Verde Escuro Fundo: #004D00 (REMOVIDO - Substituído por --dark-background-color)
+   - Cinza Claro: #f0f0f0
+   - Verde Mais Escuro para Cartões/Formulários: #006400 (REMOVIDO - Substituído por --cuca-red)
+*/
+
+:root {
+    --cuca-red: #B32C1A;
+    --cuca-gold: #FFC72C;
+    --white: #FFFFFF;
+    --dark-background-color: #5C2F0F; /* Substitui o verde escuro principal por um marrom escuro */
+    --light-gray: #f0f0f0; /* Fundo de seções como blog-posts-container, etc. */
+    --text-color: #333333; /* Cor de texto padrão para seções claras */
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --card-bg-color: var(--cuca-red); /* Fundo para cartões e seções escuras, agora vermelho Cuca */
+    --form-card-bg: var(--cuca-red); /* Fundo para cartões de formulário, agora vermelho Cuca */
+    --balance-card-bg: var(--cuca-red); /* Fundo específico para cards de saldo, agora vermelho Cuca */
+    --investment-tab-inactive: rgba(0, 0, 0, 0.2); /* Fundo para aba de investimento inativa (neutro) */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Fundo degradê de cerveja para a página */
+    background: linear-gradient(to bottom, #5A3B1B, #B36F2C, #E0A800);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha ao topo para evitar rodapé colado no meio */
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 450px;
+    /* Fundo agora é vermelho Cuca */
+    background-color: var(--cuca-red);
+    box-shadow: 0 0 10px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative; /* Para modais e elementos fixos */
+}
+
+/* Header (Geral para a maioria das páginas) */
+.header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--cuca-red);
+    color: var(--white);
+    box-shadow: 0 2px 5px var(--shadow-color);
+    position: relative;
+    justify-content: center; /* Centraliza o título */
+}
+
+.header .back-icon-link { /* Novo estilo para o link do ícone de voltar */
+    position: absolute;
+    left: 15px;
+    display: flex; /* Para centralizar o SVG */
+    align-items: center;
+    justify-content: center;
+    width: 30px; /* Aumenta a área de clique */
+    height: 30px;
+    border-radius: 50%; /* Opcional: para um fundo circular no hover/active */
+    transition: background-color 0.3s ease;
+}
+
+.header .back-icon-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header .back-icon {
+    height: 24px;
+    width: 24px;
+    fill: var(--white);
+    cursor: pointer;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+/* Top Header Area (para Login/Registro) */
+.top-header {
+    padding: 20px 15px;
+    color: var(--white);
+    text-align: left;
+    background-color: var(--dark-background-color); /* Usando nova variável */
+}
+
+.top-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--cuca-gold);
+}
+
+.top-header p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+
+/* Bottom Navigation - Ambas as classes para compatibilidade total */
+.bottom-nav,
+.bottom-navigation {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #f7f7f7; /* Um cinza muito claro */
+    border-top: 1px solid #ddd;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 0;
+    margin-top: auto; /* Empurra a navegação para baixo */
+    z-index: 10; /* Garante que esteja acima de outros elementos */
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #666; /* Cor padrão dos ícones e texto */
+    font-size: 12px;
+}
+
+.nav-item.active {
+    color: var(--cuca-gold); /* Destaque para o item ativo, agora dourado */
+}
+
+.bottom-icon {
+    height: 24px;
+    width: 24px;
+    margin-bottom: 4px;
+}
+
+/* Geral Card Style (usado em Saque, Vincular Conta) */
+.card {
+    background-color: var(--card-bg-color); /* Agora vermelho Cuca */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--white);
+    margin-bottom: 15px;
+}
+
+/* Input Group base styles (for forms) */
+.input-group {
+    margin-bottom: 15px; /* Padrão, ajustado onde necessário */
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: var(--cuca-gold); /* Títulos dos campos em dourado */
+    font-weight: bold;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input,
+.input-group input[type="number"],
+.input-group input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--white);
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.input-wrapper input::placeholder,
+.input-group input[type="number"]::placeholder,
+.input-group input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.input-wrapper .country-code {
+    padding: 12px 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: var(--white);
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.input-wrapper input.tel-input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-wrapper .icon {
+    position: absolute;
+    right: 15px;
+    height: 20px;
+    width: 20px;
+    fill: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+}
+
+/* Botões de Ação Comuns (Registrar Agora, Acessar Agora, Depositar Agora, Sacar Agora) */
+.action-main-button {
+    background-color: var(--cuca-gold); /* Alterado para dourado para maior destaque */
+    color: var(--cuca-red);
+    border: none;
+    padding: 15px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px; /* Ajustável por página */
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.action-main-button:hover {
+    background-color: #FFE08A; /* Um dourado um pouco mais claro */
+}
+
+/* Link Inferior de Alternância (Já tem conta? Acessar / Não tem conta? Cadastre-se) */
+.alternate-link-container {
+    text-align: center;
+    margin-top: 20px;
+    padding-bottom: 20px; /* Adiciona um padding para a navegação inferior não cobrir */
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+.alternate-link-container a {
+    color: var(--cuca-gold);
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.alternate-link-container a:hover {
+    color: #FFE08A;
+}
+
+
+/* HomePage Specific Styles */
+.logo .cuca-logo-svg {
+    height: 30px;
+}
+.user-info .icon-user {
+    height: 30px;
+    color: var(--white);
+}
+.top-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    background-color: var(--cuca-gold);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+.nav-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--cuca-red);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+}
+.nav-icon {
+    height: 40px;
+    width: 40px;
+    background-color: var(--white);
+    border-radius: 50%;
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 5px;
+    color: var(--cuca-red);
+}
+.nav-icon .svg {
+    fill: var(--cuca-red); /* Garante que o ícone dentro do círculo seja vermelho */
+}
+
+.featured-products {
+    padding: 20px 15px;
+    background-color: var(--light-gray);
+}
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--cuca-red);
+    margin: 0 0 10px 0;
+}
+.view-all-link {
+    color: var(--cuca-red);
+    text-decoration: none;
+    font-size: 14px;
+    align-self: flex-end;
+}
+.products-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+.product-card {
+    background-color: var(--cuca-red);
+    color: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.product-card .product-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.cuca-logo-placeholder {
+    width: 80px;
+    height: 80px;
+    background-color: var(--cuca-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--white);
+}
+.cuca-logo-placeholder .cuca-logo-svg {
+    height: 60px;
+    width: 60px;
+}
+.product-body h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+}
+.product-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+.product-details .value {
+    font-weight: bold;
+}
+.invest-button {
+    background-color: var(--cuca-gold);
+    color: var(--cuca-red);
+    border: none;
+    padding: 12px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+.invest-button:hover {
+    background-color: #FFE08A;
+}
+
+
+/* Blog Page Specific Styles */
+.top-action-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: var(--white);
+    text-decoration: none;
+}
+.action-button.publish {
+    background-color: var(--cuca-red);
+}
+.action-button.publish:hover {
+    background-color: #DA3D2C;
+}
+.action-button.rules {
+    background-color: var(--cuca-gold);
+    color: var(--cuca-red);
+}
+.action-button.rules:hover {
+    background-color: #FFE08A;
+}
+.action-button .icon {
+    height: 20px;
+    width: 20px;
+    fill: currentColor;
+}
+.blog-posts-container {
+    flex-grow: 1;
+    padding: 15px;
+    background-color: var(--light-gray);
+    overflow-y: auto;
+}
+.post-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    margin-bottom: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.post-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--cuca-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--cuca-red);
+    font-size: 18px;
+}
+.post-user-info strong {
+    display: block;
+    font-size: 15px;
+    color: var(--cuca-red);
+}
+.post-user-info span {
+    font-size: 13px;
+    color: #666;
+}
+.post-content p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-color);
+    margin: 0;
+}
+.post-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.post-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    font-size: 14px;
+    color: var(--text-color);
+    font-weight: bold;
+}
+.post-footer .amount {
+    color: var(--cuca-red);
+    font-size: 16px;
+}
+.post-footer .date {
+    color: #666;
+    font-size: 12px;
+    font-weight: normal;
+}
+/* Modal para Publicar */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+.modal-content {
+    background-color: var(--white);
+    margin: auto;
+    padding: 25px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease-out;
+}
+.modal.show .modal-content {
+    transform: translateY(0);
+}
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--cuca-red);
+    text-align: center;
+    font-size: 20px;
+}
+.modal-content label {
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 14px;
+}
+.modal-content input[type="text"],
+.modal-content textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+.modal-content textarea {
+    min-height: 80px;
+}
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.modal-buttons .cancel-button {
+    background-color: #ccc;
+    color: var(--text-color);
+}
+.modal-buttons .cancel-button:hover {
+    background-color: #bbb;
+}
+.modal-buttons .submit-button {
+    background-color: var(--cuca-red);
+    color: var(--white);
+}
+.modal-buttons .submit-button:hover {
+    background-color: #DA3D2C;
+}
+/* Loading Indicator */
+#loading-indicator {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    z-index: 1001;
+    /* Adicionados para centralizar o spinner e o texto */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+/* Message Box for alerts */
+#message-box {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1002;
+    text-align: center;
+}
+#message-box p {
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: var(--text-color);
+}
+#message-box button {
+    background-color: var(--cuca-red);
+    color: var(--white);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#message-box button:hover {
+    background-color: #DA3D2C;
+}
+
+
+/* Recarga Page Specific Styles */
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+    background-color: var(--dark-background-color); /* Usando nova variável */
+}
+.recharge-illustration {
+    width: 120px;
+    height: 120px;
+    background-color: var(--cuca-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    border: 5px solid var(--cuca-red);
+}
+.recharge-illustration svg {
+    width: 70px;
+    height: 70px;
+    fill: var(--cuca-red);
+}
+.form-section {
+    background-color: var(--card-bg-color); /* Agora vermelho Cuca */
+    margin: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--white);
+}
+.form-section h2 {
+    margin-top: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--cuca-gold);
+    margin-bottom: 15px;
+}
+/* Specific input style for number type */
+.input-group input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+}
+.value-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+.value-option-button {
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    text-align: center;
+}
+.value-option-button:hover {
+    background-color: var(--cuca-red);
+    border-color: var(--cuca-gold);
+}
+.value-option-button.selected {
+    background-color: var(--cuca-red);
+    border-color: var(--cuca-gold);
+    box-shadow: 0 0 8px rgba(255, 199, 44, 0.6);
+}
+.payment-method-option {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.payment-method-option:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: var(--cuca-gold);
+}
+.payment-method-option.selected {
+    border-color: var(--cuca-gold);
+    box-shadow: 0 0 8px rgba(255, 199, 44, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.payment-method-option label {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--white);
+    flex-grow: 1;
+    cursor: pointer;
+}
+.payment-method-option .history-link {
+    color: var(--cuca-gold);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: normal;
+    margin-left: 10px;
+}
+.payment-method-option input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--white);
+    border-radius: 50%;
+    background-color: transparent;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+}
+.payment-method-option input[type="radio"]:checked {
+    background-color: var(--cuca-gold);
+    border-color: var(--cuca-red);
+}
+.payment-method-option input[type="radio"]:checked::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background-color: var(--cuca-red);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.instructions-section {
+    background-color: var(--card-bg-color); /* Agora vermelho Cuca */
+    margin: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--white);
+}
+.instructions-section h2 {
+    margin-top: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--cuca-gold);
+    margin-bottom: 15px;
+}
+.instructions-section ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.instructions-section li {
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    position: relative;
+    padding-left: 20px;
+    color: rgba(255, 255, 255, 0.9);
+}
+.instructions-section li::before {
+    content: counter(list-item) ".";
+    counter-increment: list-item;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    color: var(--cuca-gold);
+}
+
+
+/* Saque Page Specific Styles */
+.main-content {
+    padding: 15px;
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    flex-grow: 1;
+}
+.balance-card {
+    text-align: center;
+}
+.balance-card p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+.balance-card .amount {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--cuca-gold);
+    margin-top: 5px;
+}
+
+/* Specific styles for the linked account section on Saque page */
+.linked-account-info {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--white);
+    margin-top: 10px;
+}
+
+.linked-account-info p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.linked-account-info .link-button {
+    background-color: var(--cuca-gold);
+    color: var(--cuca-red);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block; /* Makes the button responsive to content */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.linked-account-info .link-button:hover {
+    background-color: #FFE08A;
+}
+
+.amount-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px dashed rgba(255, 255, 255, 0.5);
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--white);
+}
+
+.amount-summary .actual-amount-value {
+    color: var(--cuca-gold);
+    font-size: 1.2em;
+}
+
+
+/* Vincular Conta Specific Styles */
+.input-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+}
+.input-group select option {
+    background-color: var(--card-bg-color); /* Agora vermelho Cuca */
+    color: var(--white);
+}
+.input-group.usdt-type {
+    margin-top: 15px; /* Ajuste para espaçamento consistente */
+    margin-bottom: 20px;
+}
+.input-group.usdt-type label {
+    font-size: 12px;
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* Minha Equipe Specific Styles */
+.hero-section .illustration-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--cuca-gold);
+}
+.hero-illustration-svg {
+    width: 100%;
+    height: 150px;
+    display: block;
+    margin: 0 auto;
+}
+.invitation-section {
+    background-color: var(--card-bg-color); /* Agora vermelho Cuca */
+    margin: 15px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.invitation-icon {
+    height: 30px;
+    width: 30px;
+    fill: var(--cuca-gold);
+}
+.invitation-details {
+    flex-grow: 1;
+}
+.invitation-details p {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+}
+.invitation-link {
+    font-size: 14px;
+    font-weight: bold;
+    word-break: break-all;
+}
+.copy-button {
+    background-color: var(--cuca-gold);
+    color: var(--cuca-red);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+.copy-button:hover {
+    background-color: #FFE08A;
+}
+.team-levels-container {
+    flex-grow: 1;
+    padding: 0 15px 15px 15px;
+    background-color: var(--light-gray);
+}
+.team-level-card {
+    background-color: var(--card-bg-color); /* Agora vermelho Cuca */
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--white);
+}
+.team-level-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.team-level-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--cuca-gold);
+}
+.team-level-header .details-link {
+    color: var(--cuca-gold);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+.team-stats {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    margin-top: 10px;
+}
+.stat-item .value {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--white);
+}
+.stat-item .value.rebate {
+    color: var(--cuca-gold);
+}
+.stat-item .label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+.team-level-icon {
+    height: 50px;
+    width: 50px;
+    fill: var(--cuca-gold);
+}
+.content-action-buttons {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    box-shadow: 0 -2px 5px var(--shadow-color);
+}
+.content-action-buttons .action-btn {
+    background-color: var(--card-bg-color); /* Agora vermelho Cuca */
+    color: var(--white);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+.content-action-buttons .action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.content-action-buttons .action-btn svg {
+    height: 20px;
+    width: 20px;
+    fill: var(--white);
+}
+
+
+/* Login/Registro Specific Styles */
+.tabs-container {
+    display: flex;
+    background-color: var(--form-card-bg); /* Agora vermelho Cuca */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    overflow: hidden;
+    margin: 0 15px;
+}
+.tab-button {
+    flex: 1;
+    padding: 15px 0;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    position: relative;
+    background-color: transparent;
+    border: none;
+}
+.tab-button.active {
+    color: var(--white);
+    background-color: transparent;
+}
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid var(--light-gray); /* Seta para baixo apontando para a área de formulário */
+}
+.form-card {
+    background-color: var(--form-card-bg); /* Agora vermelho Cuca */
+    margin: 0 15px 15px 15px;
+    padding: 20px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    flex-grow: 1;
+}
+.otp-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.otp-section .input-wrapper {
+    flex-grow: 1;
+}
+.otp-section .send-button {
+    background-color: var(--cuca-gold);
+    color: var(--cuca-red);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Dashboard Page Specific Styles */
+.dashboard-main-content {
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    color: var(--white);
+}
+
+.dashboard-header .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-header .user-avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--cuca-gold);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: var(--cuca-red);
+    font-size: 18px;
+}
+
+.dashboard-header .user-details .name {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--white);
+}
+
+.dashboard-header .user-details .phone-id {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard-header .header-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.dashboard-header .header-icons .icon-btn {
+    height: 28px;
+    width: 28px;
+    fill: var(--cuca-gold);
+    cursor: pointer;
+}
+
+.balance-cards-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.balance-card-item {
+    flex: 1;
+    background-color: var(--balance-card-bg); /* Agora vermelho Cuca */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--white);
+    text-align: center;
+}
+
+.balance-card-item .label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 5px;
+}
+
+.balance-card-item .amount {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--cuca-gold);
+    margin-bottom: 10px;
+}
+
+.balance-card-item .action-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--cuca-red);
+    color: var(--white);
+    padding: 8px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.balance-card-item .action-link:hover {
+    background-color: #DA3D2C;
+}
+
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    background-color: var(--balance-card-bg); /* Agora vermelho Cuca */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.quick-link-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--white);
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.quick-link-item .icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--cuca-red);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.quick-link-item .icon-circle svg {
+    height: 24px;
+    width: 24px;
+    fill: var(--cuca-gold);
+}
+
+.promo-card {
+    background-color: var(--balance-card-bg); /* Agora vermelho Cuca */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    color: var(--white);
+}
+
+.promo-card .promo-text {
+    flex-grow: 1;
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--cuca-gold);
+}
+
+.promo-card .promo-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 15px;
+    border: 2px solid var(--white);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px; /* Adicionado para não ficar muito colado na borda */
+}
+
+.service-item {
+    background-color: var(--balance-card-bg); /* Agora vermelho Cuca */
+    padding: 15px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--white);
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    gap: 8px;
+}
+
+.service-item svg {
+    height: 30px;
+    width: 30px;
+    fill: var(--cuca-gold);
+}
+
+.settings-link {
+    display: block;
+    text-align: center;
+    background-color: var(--balance-card-bg); /* Agora vermelho Cuca */
+    color: var(--cuca-gold);
+    padding: 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 10px; /* Separar um pouco do grid */
+}
+
+.settings-link:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #FFE08A;
+}
+
+/* New: Investment List Page Specific Styles */
+.investment-header {
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: var(--white);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.investment-header h1 {
+    margin: 0;
+    font-size: 18px;
+}
+
+/* ============================================================================== */
+/* ESTILOS ESPECÍFICOS PARA A PÁGINA DE ADMINISTRAÇÃO */
+/* ============================================================================== */
+
+/* Ajustes globais para o corpo da página de admin */
+body.admin-page-body { /* Adicionar esta classe ao <body> do admin.html */
+    background-color: var(--light-gray); /* Fundo claro para a página de admin */
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif; /* Usar Inter como fonte */
+    align-items: flex-start; /* Alinha ao topo para páginas mais longas */
+}
+
+.admin-header {
+    background-color: var(--dark-background-color); /* Fundo escuro conforme tema Cuca */
+    color: var(--white);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    margin-bottom: 2rem;
+}
+.admin-header h1 {
+    font-size: 2.5rem; /* Ajustado para ser mais proeminente */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.admin-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.admin-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+@media (min-width: 768px) {
+    .admin-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 1024px) {
+    .admin-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.admin-card {
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: transform 0.2s ease-in-out;
+    border-left: 5px solid var(--cuca-red); /* Detalhe com a cor principal da Cuca */
+    margin-bottom: 0;
+}
+.admin-card:hover {
+    transform: translateY(-5px);
+}
+.admin-card h2 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--dark-background-color);
+    margin-bottom: 1rem;
+}
+.admin-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+.admin-card .card-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--cuca-red); /* Usar o vermelho Cuca para valores */
+    align-self: flex-end;
+}
+
+.section-title-admin {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--cuca-red);
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.admin-list-container {
+    padding: 0 1.5rem;
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+}
+.admin-list-item {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    margin-bottom: 1rem;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    border-left: 4px solid var(--cuca-gold); /* Detalhe com a cor dourada */
+}
+@media (min-width: 600px) {
+    .admin-list-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+.admin-list-item .details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.admin-list-item .details span {
+    color: var(--text-color);
+    margin-bottom: 0.2rem;
+}
+.admin-list-item .details strong {
+    color: var(--cuca-red);
+}
+.admin-list-item .status {
+    font-weight: bold;
+    color: var(--cuca-red);
+    margin-top: 0.5rem;
+}
+.admin-list-item .actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+@media (min-width: 600px) {
+    .admin-list-item .actions {
+        margin-top: 0;
+    }
+}
+.admin-list-item .action-button {
+    background-color: var(--cuca-gold);
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.admin-list-item .action-button:hover {
+    background-color: #e6b300;
+    transform: translateY(-2px);
+}
+/* Botão de rejeitar com estilo de perigo */
+.admin-list-item .action-button.reject-deposit,
+.admin-list-item .action-button.reject-withdrawal {
+    background-color: #dc3545;
+}
+.admin-list-item .action-button.reject-deposit:hover,
+.admin-list-item .action-button.reject-withdrawal:hover {
+    background-color: #c82333;
+}
+
+.admin-actions {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+/* O botão 'action-main-button' já tem estilos globais.
+   Aqui apenas sobrescrevemos algumas propriedades para a página de admin
+   se necessário, mas o padrão já é forte. */
+.admin-actions .action-main-button {
+    background-color: var(--cuca-red); /* Usar vermelho Cuca para botões principais na admin */
+    color: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+.admin-actions .action-main-button:hover {
+    background-color: #9e2315; /* Vermelho Cuca mais escuro no hover */
+    transform: translateY(-2px);
+}
+
+/* Estilo para placeholder de listas vazias */
+.admin-list-item.placeholder-item {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+    background-color: var(--light-gray);
+    border: 1px dashed #ccc;
+    border-left: 4px solid var(--cuca-red);
+}
+/* FIM DOS ESTILOS ESPECÍFICOS PARA A PÁGINA DE ADMINISTRAÇÃO */
+/* ============================================================================== */
+
+
+/* New: Investment List Page Specific Styles */
+.investment-header {
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: var(--white);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.investment-header h1 {
+    margin: 0;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.investment-header .back-icon {
+    position: absolute;
+    left: 15px;
+    height: 24px;
+    width: 24px;
+    fill: var(--white);
+}
+
+.investment-tabs {
+    display: flex;
+    background-color: var(--dark-background-color); /* Usando nova variável */
+    padding: 0 15px 15px 15px; /* Padding extra para a parte de baixo para parecer com a imagem */
+    gap: 10px;
+}
+
+.investment-tab-button {
+    flex: 1;
+    background-color: var(--investment-tab-inactive); /* Cor para inativo, sem verde */
+    color: var(--white);
+    border: none;
+    padding: 12px 15px;
+    border-radius: 8px; /* Cantos mais arredondados */
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none; /* Para links */
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.investment-tab-button.active {
+    background-color: var(--cuca-red); /* Cor ativa */
+}
+
+.investment-tab-button .icon {
+    height: 20px;
+    width: 20px;
+    fill: currentColor;
+}
+
+.investment-products-container {
+    padding: 15px;
+    background-color: var(--light-gray);
+    flex-grow: 1;
+}
+
+.investment-product-card {
+    background-color: var(--cuca-red);
+    color: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    margin-bottom: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.investment-product-card .product-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.investment-product-card .cuca-logo-placeholder {
+    width: 80px;
+    height: 80px;
+    background-color: var(--cuca-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--white);
+}
+
+.investment-product-card .cuca-logo-placeholder svg {
+    height: 60px;
+    width: 60px;
+    fill: var(--cuca-red);
+}
+
+.investment-product-card .product-body h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.investment-product-card .product-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.investment-product-card .product-details .value {
+    font-weight: bold;
+}
+
+.investment-product-card .invest-button {
+    background-color: var(--cuca-gold);
+    color: var(--cuca-red);
+    border: none;
+    padding: 12px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.investment-product-card .invest-button:hover {
+    background-color: #FFE08A;
+}
+
+
+/* Novos estilos para o Botão Flutuante (FAB) e Modal de Histórico */
+/* floating-action-button */
+.floating-action-button {
+    position: fixed;
+    bottom: 90px; /* Ajuste para não sobrepor a navegação inferior e ficar um pouco mais alto */
+    right: 20px;
+    background-color: var(--cuca-red);
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    flex-direction: column; /* Para empilhar ícone e texto */
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7em; /* Tamanho do texto */
+    cursor: pointer;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 500; /* Acima de outros elementos, mas abaixo dos modais */
+    padding-top: 5px; /* Ajuste para o ícone/texto */
+    font-weight: bold; /* Deixa o texto do FAB mais negrito */
+}
+
+.floating-action-button:hover {
+    background-color: #e04433; /* Um vermelho um pouco mais claro */
+    transform: translateY(-3px);
+}
+
+.floating-action-button svg {
+    width: 28px; /* Tamanho do ícone */
+    height: 28px;
+    margin-bottom: 2px; /* Espaço entre ícone e texto */
+    fill: currentColor; /* Garante que o SVG herde a cor do texto (white) */
+}
+
+/* Modal de Histórico */
+/* Reutiliza a classe .modal-backdrop do seu CSS original */
+.modal-backdrop { 
+    display: flex; /* Usar flex para centralizar */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Acima de tudo */
+}
+
+.modal-content {
+    background-color: var(--white);
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px; /* Largura máxima para desktops */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 80vh; /* Altura máxima para rolagem */
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.4em;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: #999;
+    cursor: pointer;
+    line-height: 1; /* Para alinhar bem o 'x' */
+}
+
+.close-button:hover {
+    color: var(--cuca-red);
+}
+
+.modal-body {
+    overflow-y: auto; /* Adiciona rolagem se o conteúdo for muito longo */
+    flex-grow: 1; /* Permite que o body preencha o espaço disponível */
+}
+
+.transactions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.transaction-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.95em;
+    color: var(--text-color);
+}
+
+.transaction-item strong {
+    color: var(--cuca-red); /* Cor destacada para valores */
+    font-size: 1.1em;
+}
+
+.transaction-item span {
+    display: block; /* Garante que cada span fique em sua própria linha */
+    color: #555;
+}
+
+.transaction-item.placeholder-item {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+/* Responsividade para o FAB e Modal */
+@media (max-width: 600px) {
+    .floating-action-button {
+        width: 55px;
+        height: 55px;
+        bottom: 70px; /* Ajustado para telas menores para ficar um pouco mais perto da base */
+        right: 15px;
+        font-size: 0.65em;
+        padding-top: 3px;
+    }
+
+    .floating-action-button svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 0 10px;
+        padding: 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.2em;
+    }
+}
+
+/* * NOVOS ESTILOS PARA A PÁGINA DE HISTÓRICO DE TRANSAÇÕES
+ * Adicionados para a funcionalidade de histórico de transações.
+ */
+.transaction-history-content {
+    background-color: var(--light-gray); /* Fundo claro para o conteúdo da lista */
+    padding-bottom: 20px; /* Espaçamento extra para o final da lista */
+}
+
+.transaction-tabs {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 15px;
+    background-color: var(--cuca-red); /* Cor de fundo para os separadores */
+    box-shadow: 0 2px 5px var(--shadow-color);
+    gap: 10px; /* Espaço entre os botões */
+}
+
+.transaction-tab-button {
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.2); /* Fundo para separador inativo */
+    color: var(--white);
+    border: none;
+    padding: 10px 12px;
+    border-radius: 20px; /* Cantos arredondados */
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espaço entre ícone e texto */
+}
+
+.transaction-tab-button:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.transaction-tab-button.active {
+    background-color: var(--cuca-gold); /* Fundo para separador ativo */
+    color: var(--cuca-red); /* Texto do separador ativo */
+    box-shadow: 0 0 10px rgba(255, 199, 44, 0.7); /* Sombra para destaque */
+}
+
+.transaction-tab-button .tab-icon {
+    font-size: 16px; /* Tamanho do ícone */
+}
+
+/* Estilos para o status da transação */
+.transaction-status {
+    display: inline-block; /* Para que o span se ajuste ao conteúdo */
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 8px;
+    color: var(--white); /* Cor do texto padrão para status */
+}
+
+.status-aprovado {
+    background-color: #28a745; /* Verde para aprovado */
+}
+
+.status-pendente {
+    background-color: #ffc107; /* Amarelo/Laranja para pendente */
+    color: var(--text-color);
+}
+
+.status-rejeitado {
+    background-color: #dc3545; /* Vermelho para rejeitado */
+}
+
+.no-transactions-message {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+    font-style: italic;
+    font-size: 1.1em;
+    background-color: var(--white);
+    margin: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
