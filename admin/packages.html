@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pacotes de Investimento</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen flex">
+
+<!-- Sidebar -->
+<aside class="w-64 bg-gray-800 text-white flex flex-col p-4 shadow-xl">
+    <h2 class="text-2xl font-bold mb-8 text-center">Admin Panel</h2>
+    <nav class="flex-1 space-y-2">
+        <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a>
+        <a href="users.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-users mr-3"></i> Usuários</a>
+        <a href="packages.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700 bg-gray-700"><i class="fas fa-box-open mr-3"></i> Pacotes</a>
+        <a href="deposits.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-coins mr-3"></i> Depósitos</a>
+        <a href="withdrawals.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-hand-holding-usd mr-3"></i> Levantamentos</a>
+        <a href="blog.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-blog mr-3"></i> Blog</a>
+    </nav>
+    <a href="login.html" class="w-full mt-4 bg-red-500 py-2 rounded-lg hover:bg-red-600 text-center">Sair</a>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 p-8 overflow-y-auto">
+    <h2 class="text-3xl font-bold mb-6">Pacotes de Investimento</h2>
+
+    <!-- Formulário -->
+    <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <h3 class="text-xl font-semibold mb-4">Adicionar/Editar Pacote</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="package-id">
+            <input type="text" id="package-name" placeholder="Nome do Pacote" class="p-2 border rounded-md">
+            <input type="number" id="package-min" placeholder="Investimento Mínimo" class="p-2 border rounded-md">
+            <input type="number" id="package-max" placeholder="Investimento Máximo (opcional)" class="p-2 border rounded-md">
+            <input type="number" id="package-daily" placeholder="Retorno Diário (%)" step="0.01" class="p-2 border rounded-md">
+            <input type="number" id="package-duration" placeholder="Duração (dias)" class="p-2 border rounded-md">
+            <select id="package-status" class="p-2 border rounded-md">
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+            </select>
+            <input type="text" id="package-description" placeholder="Descrição" class="p-2 border rounded-md md:col-span-2">
+        </div>
+        <button onclick="savePackage()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salvar Pacote</button>
+    </div>
+
+    <!-- Tabela -->
+    <table class="min-w-full bg-white rounded-lg shadow overflow-hidden">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="py-2 px-4 border">ID</th>
+                <th class="py-2 px-4 border">Nome</th>
+                <th class="py-2 px-4 border">Descrição</th>
+                <th class="py-2 px-4 border">Min Invest</th>
+                <th class="py-2 px-4 border">Max Invest</th>
+                <th class="py-2 px-4 border">Retorno Diário</th>
+                <th class="py-2 px-4 border">Duração</th>
+                <th class="py-2 px-4 border">Status</th>
+                <th class="py-2 px-4 border">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="packages-table" class="text-center"></tbody>
+    </table>
+</main>
+
+<script type="module">
+import { showLoading, hideLoading } from './loading.js';
+
+const BASE_URL = "https://cuca-project-5.onrender.com";
+const token = localStorage.getItem("token");
+const table = document.getElementById("packages-table");
+
+// Carregar pacotes
+async function fetchPackages() {
+    try {
+        showLoading();
+        const res = await fetch(`${BASE_URL}/api/admin/packages`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        renderPackages(data.packages);
+    } catch (err) {
+        console.error("Erro ao carregar pacotes:", err);
+        table.innerHTML = `<tr><td colspan="9" class="text-red-500 py-4">Erro ao carregar pacotes</td></tr>`;
+    } finally {
+        hideLoading();
+    }
+}
+
+// Renderizar tabela
+function renderPackages(packages) {
+    table.innerHTML = "";
+    if (packages.length === 0) {
+        table.innerHTML = `<tr><td colspan="9" class="py-4">Nenhum pacote encontrado.</td></tr>`;
+        return;
+    }
+    packages.forEach(pkg => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td class="py-2 px-4 border">${pkg.id}</td>
+            <td class="py-2 px-4 border">${pkg.name}</td>
+            <td class="py-2 px-4 border">${pkg.description || "-"}</td>
+            <td class="py-2 px-4 border">${pkg.min_investment}</td>
+            <td class="py-2 px-4 border">${pkg.max_investment || "-"}</td>
+          <td class="py-2 px-4 border">${pkg.daily_return_rate}%</td>
+
+            <td class="py-2 px-4 border">${pkg.duration_days}</td>
+            <td class="py-2 px-4 border">${pkg.status}</td>
+            <td class="py-2 px-4 border space-x-2">
+                <button onclick="editPackage('${pkg.id}','${pkg.name}','${pkg.min_investment}','${pkg.max_investment}','${pkg.daily_return_rate}','${pkg.duration_days}','${pkg.status}','${pkg.description}')" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Editar</button>
+                <button onclick="deletePackage('${pkg.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Excluir</button>
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Salvar ou atualizar
+async function savePackage() {
+    const id = document.getElementById("package-id").value;
+    const name = document.getElementById("package-name").value;
+    const min = parseFloat(document.getElementById("package-min").value);
+    const max = document.getElementById("package-max").value ? parseFloat(document.getElementById("package-max").value) : null;
+    const daily = parseFloat(document.getElementById("package-daily").value) / 100;
+    const duration = parseInt(document.getElementById("package-duration").value);
+    const status = document.getElementById("package-status").value;
+    const description = document.getElementById("package-description").value;
+
+    const method = id ? "PUT" : "POST";
+    const url = id ? `${BASE_URL}/api/admin/packages/${id}` : `${BASE_URL}/api/admin/packages`;
+
+    try {
+        showLoading();
+        const res = await fetch(url, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({ 
+                name, 
+                description, 
+                min_investment: min, 
+                max_investment: max, 
+                daily_return_rate: daily, 
+                duration_days: duration, 
+                status 
+            })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        alert(data.message);
+        resetForm();
+        await fetchPackages();
+    } catch (err) {
+        alert("Erro ao salvar pacote: " + err.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Preencher formulário para editar
+function editPackage(id, name, min_investment, max_investment, daily_return_rate, duration_days, status, description) {
+    document.getElementById("package-id").value = id;
+    document.getElementById("package-name").value = name;
+    document.getElementById("package-min").value = min_investment;
+    document.getElementById("package-max").value = max_investment;
+    document.getElementById("package-daily").value = parseFloat(daily_return_rate) * 100;
+    document.getElementById("package-duration").value = duration_days;
+    document.getElementById("package-status").value = status;
+    document.getElementById("package-description").value = description;
+}
+
+// Excluir pacote
+async function deletePackage(id) {
+    if (!confirm("Tem certeza que deseja excluir este pacote?")) return;
+    try {
+        showLoading();
+        const res = await fetch(`${BASE_URL}/api/admin/packages/${id}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        alert(data.message);
+        await fetchPackages();
+    } catch (err) {
+        alert("Erro ao excluir pacote: " + err.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Resetar formulário
+function resetForm() {
+    document.getElementById("package-id").value = "";
+    document.getElementById("package-name").value = "";
+    document.getElementById("package-min").value = "";
+    document.getElementById("package-max").value = "";
+    document.getElementById("package-daily").value = "";
+    document.getElementById("package-duration").value = "";
+    document.getElementById("package-status").value = "Ativo";
+    document.getElementById("package-description").value = "";
+}
+
+// Inicializar
+fetchPackages();
+window.savePackage = savePackage;
+window.editPackage = editPackage;
+window.deletePackage = deletePackage;
+
+</script>
+
+</body>
+</html>

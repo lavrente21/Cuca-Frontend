@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Administração</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script type="module" src="loading.js"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Admin Panel -->
+<div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col p-4 shadow-xl">
+        <h2 class="text-2xl font-bold mb-8 text-center">Admin Panel</h2>
+        <nav class="flex-1 space-y-2">
+            <a href="dashboard.html" class="menu-item flex items-center w-full px-4 py-3 rounded-lg hover:bg-gray-700">
+                <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+            </a>
+            <a href="users.html" class="menu-item flex items-center w-full px-4 py-3 rounded-lg hover:bg-gray-700">
+                <i class="fas fa-users mr-3"></i> Usuários
+            </a>
+            <a href="packages.html" class="menu-item flex items-center w-full px-4 py-3 rounded-lg hover:bg-gray-700">
+                <i class="fas fa-box-open mr-3"></i> Pacotes
+            </a>
+            <a href="deposits.html" class="menu-item flex items-center w-full px-4 py-3 rounded-lg hover:bg-gray-700">
+                <i class="fas fa-coins mr-3"></i> Depósitos
+            </a>
+            <a href="withdrawals.html" class="menu-item flex items-center w-full px-4 py-3 rounded-lg hover:bg-gray-700">
+                <i class="fas fa-hand-holding-usd mr-3"></i> Levantamentos
+            </a>
+            <a href="blog.html" class="menu-item flex items-center w-full px-4 py-3 rounded-lg hover:bg-gray-700">
+                <i class="fas fa-blog mr-3"></i> Blog
+            </a>
+        </nav>
+        <button id="logout-btn" class="w-full mt-4 bg-red-500 py-2 rounded-lg hover:bg-red-600">Sair</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-blue-500 text-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-bold">Total de Usuários</h3>
+                <p id="total-users" class="text-3xl mt-2">0</p>
+            </div>
+            <div class="bg-green-500 text-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-bold">Total Depósitos</h3>
+                <p id="total-deposits" class="text-3xl mt-2">0</p>
+            </div>
+            <div class="bg-yellow-500 text-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-bold">Total Levantamentos</h3>
+                <p id="total-withdrawals" class="text-3xl mt-2">0</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script type="module">
+import { showLoading, hideLoading } from './loading.js';
+
+const token = localStorage.getItem('token');
+if (!token) {
+    window.location.href = 'login.html';
+}
+
+const logoutBtn = document.getElementById('logout-btn');
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = 'login.html';
+});
+
+async function fetchDashboardData() {
+    try {
+        showLoading();
+
+        // ====== Total de usuários ======
+        const usersRes = await fetch('https://cuca-project-5.onrender.com/api/admin/users', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const usersData = await usersRes.json();
+        let totalUsers = 0;
+        if (Array.isArray(usersData)) totalUsers = usersData.length;
+        else if (usersData.users) totalUsers = usersData.users.length;
+        else if (usersData.total) totalUsers = usersData.total;
+        document.getElementById('total-users').textContent = totalUsers;
+
+        // ====== Total de depósitos ======
+        const depositsRes = await fetch('https://cuca-project-5.onrender.com/api/admin/deposits', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const depositsData = await depositsRes.json();
+        const depositList = Array.isArray(depositsData) ? depositsData : (depositsData.deposits || []);
+        let totalDep = depositList.reduce((sum, d) => sum + parseFloat(d.amount), 0);
+        document.getElementById('total-deposits').textContent = totalDep.toFixed(2);
+
+        // ====== Total de levantamentos ======
+        const withdrawRes = await fetch('https://cuca-project-5.onrender.com/api/admin/withdrawals', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const withdrawData = await withdrawRes.json();
+        const withdrawList = Array.isArray(withdrawData) ? withdrawData : (withdrawData.withdrawals || []);
+        let totalWith = withdrawList.reduce((sum, w) => sum + parseFloat(w.actual_amount), 0);
+        document.getElementById('total-withdrawals').textContent = totalWith.toFixed(2);
+
+    } catch (err) {
+        console.error('Erro ao carregar dashboard:', err);
+        alert('Erro ao carregar dados do dashboard. Verifique o console.');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Expor função global se precisar
+window.fetchDashboardData = fetchDashboardData;
+
+fetchDashboardData();
+</script>
+
+</body>
+</html>

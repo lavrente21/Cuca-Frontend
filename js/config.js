@@ -1,0 +1,1 @@
+export const API_BASE_URL = (window.localStorage.getItem('apiBase') || 'https://cuca-project-5.onrender.com/').replace(/\/+$/,'');

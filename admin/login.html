@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login de Administrador</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module" src="loading.js"></script>
+</head>
+<body class="bg-gray-200 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Login de Administrador</h1>
+        <div class="space-y-4">
+            <input type="text" id="username" placeholder="Usuário" class="w-full p-2 border rounded-md">
+            <input type="password" id="password" placeholder="Senha" class="w-full p-2 border rounded-md">
+            <button id="login-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Entrar</button>
+            <p id="login-message" class="text-red-500 text-center hidden"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { showLoading, hideLoading } from './loading.js';
+        
+        const loginBtn = document.getElementById('login-btn');
+        const loginMessage = document.getElementById('login-message');
+
+        loginBtn.addEventListener('click', async () => {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if(!username || !password){
+                loginMessage.textContent = "Preencha todos os campos";
+                loginMessage.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                showLoading();
+
+                const res = await fetch('https://cuca-project-5.onrender.com/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                
+                if (!res.ok) throw new Error(data.message || "Erro no login");
+
+                // Verifica se o usuário é admin
+                const userRes = await fetch('https://cuca-project-5.onrender.com/api/admin/users', {
+                    headers: { 'Authorization': 'Bearer ' + data.token }
+                });
+
+                if (!userRes.ok) throw new Error("Acesso negado: Admin apenas");
+
+                // Salva token e redireciona
+                localStorage.setItem('token', data.token);
+                window.location.href = 'dashboard.html';
+            } catch (err) {
+                console.error(err);
+                loginMessage.textContent = err.message;
+                loginMessage.classList.remove('hidden');
+            } finally {
+                hideLoading();
+            }
+        });
+    </script>
+</body>
+</html>

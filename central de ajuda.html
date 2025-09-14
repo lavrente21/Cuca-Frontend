@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Ajuda</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos específicos para esta página */
+        .app-container {
+            /* Altera o fundo do container principal para o verde escuro da imagem */
+            background-color: var(--dark-background-color);
+        }
+
+        .hero-section-help {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px 15px;
+            background-color: var(--dark-background-color);
+            color: var(--white);
+            position: relative;
+        }
+
+        .hero-section-help .hero-content {
+            flex-grow: 1;
+        }
+        
+        .hero-section-help h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--cuca-gold);
+            margin: 0;
+        }
+
+        .hero-section-help p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 5px 0 0;
+            line-height: 1.4;
+        }
+
+        .hero-section-help .illustration {
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            right: 15px;
+            top: 20px;
+            /* Placeholder para a ilustração, você pode substituir por uma imagem ou SVG */
+            background: url("https://placehold.co/150x150/004D00/FFFFFF?text=Ilustra") no-repeat center center;
+            background-size: contain;
+            border-radius: 50%; /* Remove se a imagem não for circular */
+        }
+        
+        .help-cards-container {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 20px 20px 0 0;
+            margin-top: -10px; /* Sobrepõe a seção hero para um visual contínuo */
+            z-index: 1;
+            position: relative;
+        }
+
+        .help-card {
+            background-color: var(--cuca-red);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            text-decoration: none; /* Remove sublinhado dos links */
+            display: block; /* Garante que o card seja um bloco para preencher o espaço */
+        }
+
+        .help-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .help-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .help-card-icon {
+            width: 40px;
+            height: 40px;
+            fill: var(--cuca-gold);
+        }
+
+        .help-card h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--cuca-gold);
+        }
+
+        .help-card p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .help-card .working-hours {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+
+        .help-card-telegram h2 {
+            color: var(--white); /* Título do Telegram é branco */
+        }
+
+        .help-card-telegram .help-card-icon {
+            fill: var(--white);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="header">
+            <a href="#" class="back-icon-link" onclick="window.history.back()">
+                <svg viewBox="0 0 24 24" class="back-icon">
+                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="currentColor"/>
+                </svg>
+            </a>
+            <h1>Central de Ajuda</h1>
+        </header>
+
+        <!-- Hero Section -->
+        <div class="hero-section-help">
+            <div class="hero-content">
+                <h1>Service center</h1>
+                <p>Accompaniment you all the way when you need it</p>
+            </div>
+            <img src="https://placehold.co/150x150/006400/FFFFFF?text=Ilustra" alt="Ilustração do Atendimento" class="illustration" />
+        </div>
+
+        <!-- Help Cards Section -->
+        <div class="help-cards-container">
+            
+            <!-- Online Support Card -->
+            <!-- Caminho adicionado para a página de contato -->
+            <a class="help-card" href="https://chat.whatsapp.com/IhLl2COea359ap8N9Bn4lA?mode=ems_copy_t">
+                <div class="help-card-header">
+                    <svg class="help-card-icon" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" fill="currentColor"/>
+                    </svg>
+                    <h2>Atendimento Online</h2>
+                </div>
+                <p class="working-hours">Horário de funcionamento: 09:00:00 - 19:00:00</p>
+            </a>
+
+            <!-- Deposit Card -->
+            <!-- Caminho adicionado para a página de FAQ sobre depósitos -->
+            <a class="help-card" href="https://chat.whatsapp.com/IhLl2COea359ap8N9Bn4lA?mode=ems_copy_t">
+                <div class="help-card-header">
+                    <svg class="help-card-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+                    </svg>
+                    <h2>Seu depósito ainda não foi creditado?</h2>
+                </div>
+                <p>Após carregar sua conta com sucesso, se o saldo ainda não foi creditado, informe aqui e nosso atendimento irá ajudá-lo!</p>
+            </a>
+
+            <!-- Telegram Card -->
+            <!-- Link externo para o Telegram, abrindo em uma nova aba -->
+            <a class="help-card" href="https://t.me/cucainvest" target="_blank" rel="noopener noreferrer">
+                <div class="help-card-header">
+                    <svg class="help-card-icon" viewBox="0 0 24 24">
+                        <path d="M18.84 5.91l-1.57 7.42c-.22 1.04-.75 1.48-1.57.98l-3.32-2.45-1.58 1.52c-.15.15-.27.27-.58.27l.42 2.6c.15.75-.38 1.13-1.09.75l-4.5-3.32c-.88-.65-.87-1.7-.12-2.34l12.72-8.08c.5-.3.9.1.5.5z" fill="currentColor"/>
+                    </svg>
+                    <h2>Telegram</h2>
+                </div>
+                <p>Siga nosso canal oficial no Telegram para receber as últimas notícias e benefícios exclusivos</p>
+            </a>
+            
+        </div>
+    </div>
+    
+</body>
+</html>

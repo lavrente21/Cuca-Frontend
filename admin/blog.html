@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Blog</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script type="module" src="loading.js"></script>
+</head>
+<body class="min-h-screen flex">
+
+<!-- Sidebar -->
+<aside class="w-64 bg-gray-800 text-white flex flex-col p-4 shadow-xl">
+    <h2 class="text-2xl font-bold mb-8 text-center">Admin Panel</h2>
+    <nav class="flex-1 space-y-2">
+        <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a>
+        <a href="users.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-users mr-3"></i> Usuários</a>
+        <a href="packages.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-box-open mr-3"></i> Pacotes</a>
+        <a href="deposits.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-coins mr-3"></i> Depósitos</a>
+        <a href="withdrawals.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-hand-holding-usd mr-3"></i> Levantamentos</a>
+        <a href="blog.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700 bg-gray-700"><i class="fas fa-blog mr-3"></i> Blog</a>
+    </nav>
+    <a href="login.html" class="w-full mt-4 bg-red-500 py-2 rounded-lg hover:bg-red-600 text-center">Sair</a>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 p-8 overflow-y-auto">
+    <h2 class="text-3xl font-bold mb-6">Posts do Blog Pendentes</h2>
+
+    <table class="min-w-full bg-white rounded-lg shadow overflow-hidden">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="py-2 px-4 border">ID</th>
+                <th class="py-2 px-4 border">Autor</th>
+                <th class="py-2 px-4 border">Título</th>
+                <th class="py-2 px-4 border">Data</th>
+                <th class="py-2 px-4 border">Imagem</th>
+                <th class="py-2 px-4 border">Status</th>
+                <th class="py-2 px-4 border">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="posts-table" class="text-center">
+            <!-- JS irá inserir os posts aqui -->
+        </tbody>
+    </table>
+</main>
+
+<script type="module">
+import { showLoading, hideLoading } from './loading.js';
+
+const API_BASE = 'https://cuca-project-5.onrender.com/api'; 
+const token = localStorage.getItem('token'); 
+const table = document.getElementById('posts-table');
+// Defina se é admin ou usuário
+const isAdmin = true; // mudar para false para usuários comuns
+
+
+// Buscar posts pendentes
+async function fetchPosts(isAdmin = false) {
+    try {
+        showLoading();
+        const url = isAdmin 
+            ? `${API_BASE}/admin/blog/posts`  // admin vê todos
+            : `${API_BASE}/blog/posts`;       // usuário vê apenas aprovados
+        const res = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        return data.posts || [];
+    } catch (err) {
+        console.error('Erro ao buscar posts:', err);
+        return [];
+    } finally {
+        hideLoading();
+    }
+}
+
+
+// Renderizar posts
+function renderPosts(posts, isAdmin) {
+    table.innerHTML = '';
+    if(posts.length === 0){
+        table.innerHTML = `<tr><td colspan="7" class="py-4 text-center">Nenhum post encontrado.</td></tr>`;
+        return;
+    }
+    posts.forEach(post => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="py-2 px-4 border">${post.id}</td>
+            <td class="py-2 px-4 border">${post.author}</td>
+            <td class="py-2 px-4 border">${post.title}</td>
+            <td class="py-2 px-4 border">${new Date(post.published_at).toLocaleDateString()}</td>
+            <td class="py-2 px-4 border"><img src="${post.image_url || 'https://via.placeholder.com/50'}" class="w-12 h-12 object-cover mx-auto rounded"></td>
+            <td class="py-2 px-4 border">${post.is_approved === null ? 'Pendente' : post.is_approved ? 'Aprovado' : 'Rejeitado'}</td>
+            <td class="py-2 px-4 border space-x-2">
+                ${isAdmin ? `<button onclick="updatePostStatus('${post.id}', true)" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">Aprovar</button>
+                <button onclick="updatePostStatus('${post.id}', false)" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Rejeitar</button>` : ''}
+            </td>
+        `;
+        table.appendChild(row);
+    });
+}
+
+// Aprovar/Rejeitar post
+async function updatePostStatus(postId, approve) {
+    try {
+        showLoading();
+        const res = await fetch(`${API_BASE}/admin/blog/posts/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ is_approved: approve })
+        });
+        const data = await res.json();
+        alert(data.message);
+        loadPosts();
+    } catch (err) {
+        console.error('Erro ao atualizar status do post:', err);
+        alert('Erro ao atualizar status do post.');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Carrega e renderiza posts
+async function loadPosts(isAdmin = false) {
+    const posts = await fetchPosts(isAdmin);
+    renderPosts(posts, isAdmin);
+}
+
+
+// Tornar funções globais para onclick
+window.updatePostStatus = updatePostStatus;
+window.loadPosts = loadPosts;
+
+loadPosts(isAdmin);
+
+</script>
+
+</body>
+</html>

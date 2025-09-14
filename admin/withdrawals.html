@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levantamentos - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col p-4 shadow-xl">
+        <h2 class="text-2xl font-bold mb-8 text-center">Admin Panel</h2>
+        <nav class="flex-1 space-y-2">
+            <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a>
+            <a href="users.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-users mr-3"></i> Usuários</a>
+            <a href="packages.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-box-open mr-3"></i> Pacotes</a>
+            <a href="deposits.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-coins mr-3"></i> Depósitos</a>
+            <a href="withdrawals.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700 bg-gray-700"><i class="fas fa-hand-holding-usd mr-3"></i> Levantamentos</a>
+            <a href="blog.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-blog mr-3"></i> Blog</a>
+        </nav>
+        <a href="login.html" class="w-full mt-4 bg-red-500 py-2 rounded-lg hover:bg-red-600 text-center">Sair</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <h1 class="text-3xl font-bold mb-4">Aprovação de Levantamentos</h1>
+
+        <!-- Barra de pesquisa -->
+        <div class="mb-6">
+            <input type="text" id="search-input" placeholder="Pesquisar por usuário ou código..." class="w-full p-2 border rounded-md">
+        </div>
+
+        <table class="min-w-full bg-white rounded-lg shadow overflow-hidden">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-2 px-4 text-left">ID</th>
+                    <th class="py-2 px-4 text-left">User ID</th>
+                    <th class="py-2 px-4 text-left">Valor Solicitado</th>
+                    <th class="py-2 px-4 text-left">Taxa</th>
+                    <th class="py-2 px-4 text-left">Valor Final</th>
+                    <th class="py-2 px-4 text-left">Status</th>
+                    <th class="py-2 px-4 text-left">Data</th>
+                    <th class="py-2 px-4 text-left">Conta/IBAN</th>
+                    <th class="py-2 px-4 text-left">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="withdrawals-body">
+                <!-- Linhas serão adicionadas via JS -->
+            </tbody>
+        </table>
+    </main>
+
+    <script type="module">
+        import { showLoading, hideLoading } from './loading.js';
+
+        const BASE_URL = 'https://cuca-project-5.onrender.com';
+        const token = localStorage.getItem('token');
+        const tbody = document.getElementById('withdrawals-body');
+        const searchInput = document.getElementById('search-input');
+        let withdrawalsList = [];
+
+        // Buscar levantamentos
+        async function fetchWithdrawals() {
+            try {
+                showLoading();
+                const res = await fetch(`${BASE_URL}/api/admin/withdrawals`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Erro ao carregar levantamentos.');
+                withdrawalsList = data.withdrawals || [];
+                renderTable(withdrawalsList);
+            } catch (err) {
+                console.error('Erro ao carregar levantamentos:', err);
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-red-500 py-4">Erro ao carregar levantamentos.</td></tr>`;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Renderizar tabela
+        function renderTable(list) {
+            tbody.innerHTML = '';
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4">Nenhum levantamento encontrado.</td></tr>`;
+                return;
+            }
+
+            list.forEach(wd => {
+                const tr = document.createElement('tr');
+                tr.classList.add('border-b');
+                tr.innerHTML = `
+                    <td class="py-2 px-4">${wd.id}</td>
+                    <td class="py-2 px-4">${wd.username || 'N/A'} </td>
+                    <td class="py-2 px-4">${parseFloat(wd.requested_amount).toFixed(2)} AO</td>
+                    <td class="py-2 px-4">${parseFloat(wd.fee).toFixed(2)} AO</td>
+                    <td class="py-2 px-4">${parseFloat(wd.actual_amount).toFixed(2)} AO</td>
+                    <td class="py-2 px-4 font-bold">${wd.status}</td>
+                    <td class="py-2 px-4">${new Date(wd.timestamp).toLocaleString()}</td>
+                    <td class="py-2 px-4">${wd.account_number_used}</td>
+                    <td class="py-2 px-4 flex gap-2">
+                        <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600" onclick="processWithdrawal('${wd.id}', 'Aprovado')">Aprovar</button>
+                        <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="processWithdrawal('${wd.id}', 'Rejeitado')">Rejeitar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Pesquisar por username ou user_id_code
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            const filtered = withdrawalsList.filter(wd =>
+                (wd.username && wd.username.toLowerCase().includes(query)) ||
+                (wd.user_id_code && wd.user_id_code.toString().includes(query))
+            );
+            renderTable(filtered);
+        });
+
+        // Aprovar ou rejeitar
+ async function processWithdrawal(id, status) {
+    if (!confirm(`Tem certeza que deseja ${status.toLowerCase()} este levantamento?`)) return;
+    try {
+        showLoading();
+        const res = await fetch(`${BASE_URL}/api/admin/withdrawals/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ status })
+        });
+
+        let data;
+        try {
+            data = await res.json();
+        } catch {
+            data = { message: await res.text() };
+        }
+
+        if (!res.ok) throw new Error(data.message || `Erro ao processar levantamento. Código: ${res.status}`);
+
+        alert(data.message || `Levantamento ${status}`);
+        await fetchWithdrawals();
+    } catch (err) {
+        console.error('Erro:', err);
+        alert('Erro ao processar levantamento: ' + err.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+        // Inicializa tabela
+        fetchWithdrawals();
+        window.processWithdrawal = processWithdrawal;
+
+    </script>
+</body>
+</html>

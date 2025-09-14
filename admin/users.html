@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Usuários</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col p-4 shadow-xl">
+        <h2 class="text-2xl font-bold mb-8 text-center">Admin Panel</h2>
+        <nav class="flex-1 space-y-2">
+            <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a>
+            <a href="users.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700 bg-gray-700"><i class="fas fa-users mr-3"></i> Usuários</a>
+            <a href="packages.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-box-open mr-3"></i> Pacotes</a>
+            <a href="deposits.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-coins mr-3"></i> Depósitos</a>
+            <a href="withdrawals.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-hand-holding-usd mr-3"></i> Levantamentos</a>
+            <a href="blog.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-blog mr-3"></i> Blog</a>
+        </nav>
+        <button id="logout-btn" class="w-full mt-4 bg-red-500 py-2 rounded-lg hover:bg-red-600">Sair</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <h1 class="text-3xl font-bold mb-4">Gestão de Usuários</h1>
+
+        <!-- Barra de pesquisa -->
+        <div class="mb-6">
+            <input type="text" id="search-input" placeholder="Pesquisar usuário ou ID..." class="w-full p-2 border rounded-md">
+        </div>
+
+        <table class="w-full table-auto border border-gray-300 bg-white rounded-lg overflow-hidden">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-2 border">ID</th>
+                    <th class="px-4 py-2 border">Usuário</th>
+                    <th class="px-4 py-2 border">Saldo</th>
+                    <th class="px-4 py-2 border">Recarregado</th>
+                    <th class="px-4 py-2 border">Retirado</th>
+                    <th class="px-4 py-2 border">Código</th>
+                    <th class="px-4 py-2 border">Conta Bancária</th>
+                    <th class="px-4 py-2 border">Administrador</th>
+                    <th class="px-4 py-2 border">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="users-table">
+                <!-- Conteúdo gerado por JS -->
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Modal de Edição -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+        <div class="bg-white p-6 rounded-xl w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-4">Editar Usuário</h2>
+            <form id="edit-form" class="space-y-3">
+                <input type="text" id="edit-username" placeholder="Usuário" class="w-full p-2 border rounded-md">
+                <input type="number" step="0.01" id="edit-balance" placeholder="Saldo" class="w-full p-2 border rounded-md">
+                <input type="number" step="0.01" id="edit-balance-recharge" placeholder="Recarregado" class="w-full p-2 border rounded-md">
+                <input type="number" step="0.01" id="edit-balance-withdraw" placeholder="Retirado" class="w-full p-2 border rounded-md">
+                <input type="text" id="edit-user-id-code" placeholder="Código" class="w-full p-2 border rounded-md">
+                <input type="text" id="edit-linked-account" placeholder="Conta Bancária" class="w-full p-2 border rounded-md">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" id="edit-is-admin">
+                    <span>Administrador</span>
+                </label>
+                <div class="flex justify-end space-x-2 mt-4">
+                    <button type="button" id="close-modal" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+  <script type="module">
+import { showLoading, hideLoading } from './loading.js';
+
+const token = localStorage.getItem('token');
+if (!token) window.location.href = 'login.html';
+
+const tableBody = document.getElementById('users-table');
+const editModal = document.getElementById('edit-modal');
+const editForm = document.getElementById('edit-form');
+const searchInput = document.getElementById('search-input');
+let users = [];
+let currentUserIndex = null;
+
+async function fetchUsers() {
+    try {
+        showLoading();
+        const res = await fetch('https://cuca-project-5.onrender.com/api/admin/users', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) throw new Error('Erro ao carregar usuários');
+        const data = await res.json();
+        users = data.users || [];
+        renderUsers(users);
+    } catch (err) {
+        console.error(err);
+        tableBody.innerHTML = '<tr><td colspan="9" class="text-center p-4 text-red-500">Erro ao carregar usuários.</td></tr>';
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderUsers(list = users) {
+    tableBody.innerHTML = '';
+    if (list.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="9" class="text-center p-4">Nenhum usuário encontrado.</td></tr>';
+        return;
+    }
+    list.forEach((user, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="border px-4 py-2">${user.id}</td>
+            <td class="border px-4 py-2">${user.username}</td>
+            <td class="border px-4 py-2">${parseFloat(user.balance).toFixed(2)}</td>
+            <td class="border px-4 py-2">${parseFloat(user.balance_recharge).toFixed(2)}</td>
+            <td class="border px-4 py-2">${parseFloat(user.balance_withdraw).toFixed(2)}</td>
+            <td class="border px-4 py-2">${user.user_id_code}</td>
+            <td class="border px-4 py-2">${user.linked_account_bank_name || ''} - ${user.linked_account_number || ''}</td>
+            <td class="border px-4 py-2">${user.is_admin ? 'Sim' : 'Não'}</td>
+            <td class="border px-4 py-2">
+                <button onclick="editUser(${index})" class="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">Editar</button>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
+
+// Pesquisa por username ou código
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    const filteredUsers = users.filter(user =>
+        user.username.toLowerCase().includes(query) ||
+        user.user_id_code.toString().includes(query)
+    );
+    renderUsers(filteredUsers);
+});
+
+// Editar usuário
+function editUser(index) {
+    currentUserIndex = index;
+    const user = users[index];
+    document.getElementById('edit-username').value = user.username;
+    document.getElementById('edit-balance').value = user.balance;
+    document.getElementById('edit-balance-recharge').value = user.balance_recharge;
+    document.getElementById('edit-balance-withdraw').value = user.balance_withdraw;
+    document.getElementById('edit-user-id-code').value = user.user_id_code;
+    document.getElementById('edit-linked-account').value = `${user.linked_account_bank_name || ''} - ${user.linked_account_number || ''}`;
+    document.getElementById('edit-is-admin').checked = user.is_admin;
+    editModal.classList.remove('hidden');
+}
+
+// Salvar edição
+editForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const user = users[currentUserIndex];
+    const updatedUser = {
+        username: document.getElementById('edit-username').value,
+        balance: parseFloat(document.getElementById('edit-balance').value),
+        balance_recharge: parseFloat(document.getElementById('edit-balance-recharge').value),
+        balance_withdraw: parseFloat(document.getElementById('edit-balance-withdraw').value),
+        user_id_code: document.getElementById('edit-user-id-code').value,
+        linked_account_bank_name: document.getElementById('edit-linked-account').value.split(' - ')[0] || '',
+        linked_account_number: document.getElementById('edit-linked-account').value.split(' - ')[1] || '',
+        is_admin: document.getElementById('edit-is-admin').checked
+    };
+    try {
+        showLoading();
+        const res = await fetch(`https://cuca-project-5.onrender.com/api/admin/users/${user.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(updatedUser)
+        });
+        if (!res.ok) throw new Error('Falha ao atualizar usuário');
+        users[currentUserIndex] = { ...user, ...updatedUser };
+        renderUsers(users);
+        editModal.classList.add('hidden');
+    } catch (err) {
+        console.error(err);
+        alert('Erro ao atualizar usuário');
+    } finally {
+        hideLoading();
+    }
+});
+
+document.getElementById('close-modal').addEventListener('click', () => editModal.classList.add('hidden'));
+document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    window.location.href = 'login.html';
+});
+
+// Inicializa
+fetchUsers();
+// Tornar editUser acessível globalmente para os botões onclick
+window.editUser = editUser;
+
+</script>

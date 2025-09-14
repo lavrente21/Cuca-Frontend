@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovação de Depósitos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script type="module" src="loading.js"></script>
+
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col p-4 shadow-xl">
+        <h2 class="text-2xl font-bold mb-8 text-center">Admin Panel</h2>
+        <nav class="flex-1 space-y-2">
+            <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-tachometer-alt mr-3"></i> Dashboard</a>
+            <a href="users.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-users mr-3"></i> Usuários</a>
+            <a href="packages.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-box-open mr-3"></i> Pacotes</a>
+            <a href="deposits.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700 bg-gray-700"><i class="fas fa-coins mr-3"></i> Depósitos</a>
+            <a href="withdrawals.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-hand-holding-usd mr-3"></i> Levantamentos</a>
+            <a href="blog.html" class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-700"><i class="fas fa-blog mr-3"></i> Blog</a>
+        </nav>
+        <a href="login.html" class="w-full mt-4 bg-red-500 py-2 rounded-lg hover:bg-red-600 text-center">Sair</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <h1 class="text-3xl font-bold mb-4">Aprovação de Depósitos</h1>
+
+        <!-- Barra de pesquisa -->
+        <div class="mb-6">
+            <input type="text" id="search-input" placeholder="Pesquisar por username ou código..." class="w-full p-2 border rounded-md">
+        </div>
+
+        <table class="w-full table-auto border border-gray-300 bg-white rounded-lg overflow-hidden">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-2 border">ID</th>
+                    <th class="px-4 py-2 border">User ID</th>
+                    <th class="px-4 py-2 border">Valor</th>
+                    <th class="px-4 py-2 border">Status</th>
+                    <th class="px-4 py-2 border">Data</th>
+                    <th class="px-4 py-2 border">Comprovativo</th>
+                    <th class="px-4 py-2 border">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="deposits-table">
+                <!-- Conteúdo gerado por JS -->
+            </tbody>
+        </table>
+    </main>
+
+<script type="module">
+import { showLoading, hideLoading } from './loading.js';
+
+const BASE_URL = 'https://cuca-project-5.onrender.com';
+const tableBody = document.getElementById('deposits-table');
+const searchInput = document.getElementById('search-input');
+let deposits = [];
+
+// Buscar todos os depósitos com loader
+async function fetchDeposits() {
+    try {
+        showLoading();
+        const res = await fetch(`${BASE_URL}/api/admin/deposits`, {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        if (!res.ok) throw new Error('Erro ao carregar depósitos');
+        const data = await res.json();
+        deposits = data.deposits || [];
+        renderDeposits(deposits);
+    } catch (err) {
+        console.error(err);
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center p-4 text-red-500">Erro ao carregar depósitos.</td></tr>';
+    } finally {
+        hideLoading();
+    }
+}
+
+// Aprovar ou rejeitar depósito
+async function updateDepositStatus(depositId, index, status) {
+    try {
+        showLoading();
+        const res = await fetch(`${BASE_URL}/api/admin/deposits/${depositId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify({ status })
+        });
+        if (!res.ok) throw new Error('Erro ao atualizar depósito');
+        deposits[index].status = status;
+        renderDeposits(deposits);
+    } catch (err) {
+        console.error(err);
+        alert(`Erro ao ${status.toLowerCase()} depósito`);
+    } finally {
+        hideLoading();
+    }
+}
+
+function approveDeposit(depositId, index) {
+    updateDepositStatus(depositId, index, 'Aprovado');
+}
+
+function rejectDeposit(depositId, index) {
+    updateDepositStatus(depositId, index, 'Rejeitado');
+}
+
+// Renderizar tabela
+function renderDeposits(list = deposits) {
+    tableBody.innerHTML = '';
+    if (list.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center p-4">Nenhum depósito encontrado.</td></tr>';
+        return;
+    }
+    list.forEach((dep, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="border px-4 py-2">${dep.id}</td>
+            <td class="py-2 px-4">${dep.username || 'N/A'}</td>
+            <td class="border px-4 py-2">${parseFloat(dep.amount).toFixed(2)}</td>
+            <td class="border px-4 py-2">${dep.status}</td>
+            <td class="border px-4 py-2">${new Date(dep.timestamp).toLocaleString()}</td>
+            <td class="border px-4 py-2 text-center">
+                <img src="${BASE_URL}/uploads/${dep.receipt_filename}" class="w-16 h-16 object-cover mx-auto rounded-md border">
+            </td>
+            <td class="border px-4 py-2 space-x-2">
+                <button onclick="approveDeposit('${dep.id}', ${index})" class="bg-green-500 px-2 py-1 rounded hover:bg-green-600 text-white">Aprovar</button>
+                <button onclick="rejectDeposit('${dep.id}', ${index})" class="bg-red-500 px-2 py-1 rounded hover:bg-red-600 text-white">Rejeitar</button>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
+
+// Filtrar depósitos pelo input (username ou user_id_code)
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    const filteredDeposits = deposits.filter(dep =>
+        (dep.username && dep.username.toLowerCase().includes(query)) ||
+        (dep.user_id_code && dep.user_id_code.toLowerCase().includes(query))
+    );
+    renderDeposits(filteredDeposits);
+});
+
+// Inicializa página
+fetchDeposits();
+
+// Expor funções para o escopo global para funcionar com onclick inline
+window.approveDeposit = approveDeposit;
+window.rejectDeposit = rejectDeposit;
+    
+</script>
+
+</body>
+</html>

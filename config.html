@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Informações</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Estilos específicos para esta página */
+        body {
+            /* O fundo degradê agora é definido no seu style.css, mas adicionamos um flexbox para centralizar */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-color: transparent;
+            padding: 15px;
+            color: var(--white);
+            box-shadow: none;
+            margin-bottom: 20px;
+        }
+
+        .header .back-icon-link {
+            position: absolute;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .header .back-icon {
+            height: 24px;
+            width: 24px;
+            fill: var(--white);
+            cursor: pointer;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            text-align: center;
+            color: var(--cuca-gold);
+        }
+
+        .card {
+            background-color: var(--form-card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            color: var(--white);
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-info {
+            flex-grow: 1;
+        }
+
+        .profile-info p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .profile-info small {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-image-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: var(--cuca-gold);
+            border: 2px solid var(--white);
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .password-section {
+            background-color: var(--form-card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            color: var(--white);
+        }
+
+        .password-section h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: var(--cuca-gold);
+        }
+
+        .arrow-icon {
+            width: 20px;
+            height: 20px;
+            fill: var(--white);
+        }
+
+        .password-text {
+            display: flex;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header class="header">
+            <a href="#" class="back-icon-link" onclick="window.history.back()">
+                <svg viewBox="0 0 24 24" class="back-icon">
+                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="currentColor"/>
+                </svg>
+            </a>
+            <h1>Configurar Informações</h1>
+        </header>
+        
+        <div class="card">
+            <div class="profile-section">
+                <div class="profile-image-container">
+                    <img src="https://placehold.co/60x60/B32C1A/FFC72C?text=P" alt="Profile Image" class="profile-image">
+                </div>
+                <div class="profile-info">
+                    <p>Clique para alterar a foto</p>
+                    <small>Recomendamos imagens 1:1 com mais de 100px</small>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="nickname">Apelido</label>
+                <input type="text" id="nickname" value="Picante">
+            </div>
+
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="E-mail">
+            </div>
+
+            <button class="action-main-button">Salvar Informações</button>
+        </div>
+
+        <div class="password-section">
+            <div class="password-text">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18 9h-1V7c0-2.76-2.24-5-5-5S7 4.24 7 7v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V11c0-1.1-.9-2-2-2zm-2 0H8V7c0-2.21 1.79-4 4-4s4 1.79 4 4v2zm2 12H6V11h12v10zm-6-4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                </svg>
+                <h3>Senha de Login</h3>
+            </div>
+            <svg class="arrow-icon" viewBox="0 0 24 24">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+            </svg>
+        </div>
+
+        <div class="password-section">
+            <div class="password-text">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/>
+                </svg>
+                <h3>Senha de Transação</h3>
+            </div>
+            <svg class="arrow-icon" viewBox="0 0 24 24">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+            </svg>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (error) {
+            console.error("Erro ao inicializar Firebase:", error);
+        }
+
+        // Get the invitation code from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const invitationCode = urlParams.get('invitation_code');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userId = user.uid;
+                console.log("Usuário logado:", userId);
+                console.log("Código de convite:", invitationCode);
+
+                // This is where you would save the new user's information to Firestore
+                // including the invitationCode to link them to the referrer.
+                if (invitationCode) {
+                    try {
+                        const userRef = doc(db, 'artifacts', appId, 'public', 'team_members', userId);
+                        await setDoc(userRef, {
+                            referredBy: invitationCode,
+                            joinedAt: new Date().toISOString(),
+                            // Adicione outros dados do usuário aqui, como nome, email, etc.
+                        }, { merge: true });
+                        console.log("Informações de referência salvas com sucesso!");
+                    } catch (error) {
+                        console.error("Erro ao salvar informações de referência:", error);
+                    }
+                }
+
+            } else {
+                console.log("Usuário não logado. Tentando fazer login anônimo.");
+                try {
+                    await signInAnonymously(auth);
+                } catch (error) {
+                    console.error("Erro ao fazer login anônimo:", error);
+                }
+            }
+        });
+
+        if (initialAuthToken) {
+            signInWithCustomToken(auth, initialAuthToken).catch(error => {
+                console.error("Erro ao fazer login com token personalizado:", error);
+            });
+        }
+    </script>
+</body>
+</html>

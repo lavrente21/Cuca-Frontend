@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar no Blog - Cuca</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-container">
+    <header class="header">
+        <a href="blog.html" class="back-icon-link">
+            <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/>
+                <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+        </a>
+        <h1>Publicar Blog</h1>
+    </header> 
+
+    <main class="publish-blog-container">
+        <form id="publishForm" enctype="multipart/form-data">
+            <div class="publish-card">
+                <h2>Escreva sua publicação</h2>
+                <textarea name="content" id="content" placeholder="Por favor, insira o conteúdo" required></textarea>
+            </div>
+
+            <div class="publish-card">
+                <h2>Adicionar fotos (opcional)</h2>
+                <input type="file" id="photo-input" name="img" accept="image/*">
+            </div>
+
+            <button type="submit" class="action-main-button">Publicar</button>
+        </form>
+
+        <script>
+        document.getElementById("publishForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const token = localStorage.getItem("userToken");
+            if (!token) {
+                alert("Você precisa estar logado para publicar.");
+                return;
+            }
+
+            const contentEl = document.getElementById("content");
+            const content = contentEl.value.trim();
+            if (!content) {
+                alert("Escreva algo antes de publicar.");
+                contentEl.focus();
+                return;
+            }
+
+            const photoInput = document.getElementById("photo-input");
+            const formData = new FormData();
+            formData.append("content", content); // campo esperado pelo backend
+            if (photoInput.files.length > 0) {
+                formData.append("img", photoInput.files[0]);
+            }
+
+            // debug: verificar o que está sendo enviado
+            for (let pair of formData.entries()) {
+                console.log("Campo enviado:", pair[0], pair[1]);
+            }
+
+            try {
+                const res = await fetch("https://cuca-project-5.onrender.com/api/blog/posts", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                        // NÃO coloque Content-Type, o browser faz isso automaticamente
+                    },
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert("Publicação feita com sucesso!");
+                    window.location.href = "blog.html";
+                } else {
+                    alert("Erro: " + (data.message || "Não foi possível publicar."));
+                    console.log("Resposta do servidor:", data);
+                }
+            } catch (err) {
+                alert("Falha ao enviar: " + err.message);
+                console.error(err);
+            }
+        });
+        </script>
+    </main>
+</div>
+</body>
+</html>
