@@ -29,6 +29,7 @@
                 <h2>Adicionar fotos (máx. 2)</h2>
                 <input type="file" id="photo-input" name="imgs" accept="image/*" multiple>
             </div>
+
             <button type="submit" class="action-main-button">Publicar</button>
         </form>
 
@@ -42,9 +43,11 @@
                 return;
             }
 
-            const content = document.getElementById("content").value.trim();
+            const contentEl = document.getElementById("content");
+            const content = contentEl.value.trim();
             if (!content) {
                 alert("Escreva algo antes de publicar.");
+                contentEl.focus();
                 return;
             }
 
@@ -53,8 +56,10 @@
             formData.append("content", content);
 
             // Adiciona até 2 imagens
-            for (let i = 0; i < Math.min(photoInput.files.length, 2); i++) {
-                formData.append("imgs", photoInput.files[i]);
+            if (photoInput.files.length > 0) {
+                for (let i = 0; i < Math.min(photoInput.files.length, 2); i++) {
+                    formData.append("imgs", photoInput.files[i]);
+                }
             }
 
             try {
@@ -62,12 +67,11 @@
                     method: "POST",
                     headers: {
                         "Authorization": "Bearer " + token
-                        // NÃO colocar Content-Type aqui
+                        // Não colocar Content-Type manualmente
                     },
                     body: formData
                 });
 
-                // Tenta ler JSON
                 let data;
                 try { data = await res.json(); } 
                 catch(err) { data = { message: "Resposta inválida do servidor" }; }
