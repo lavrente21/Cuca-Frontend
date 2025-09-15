@@ -24,10 +24,10 @@
                 <h2>Escreva sua publicação</h2>
                 <textarea name="content" id="content" placeholder="Por favor, insira o conteúdo" required></textarea>
             </div>
-
+<br>
             <div class="publish-card">
-                <h2>Adicionar fotos (opcional)</h2>
-                <input type="file" id="photo-input" name="img" accept="image/*">
+                <h2>Adicionar fotos (máx. 2)</h2>
+                <input type="file" id="photo-input" name="imgs" accept="image/*" multiple>
             </div>
 
             <button type="submit" class="action-main-button">Publicar</button>
@@ -53,12 +53,16 @@
 
             const photoInput = document.getElementById("photo-input");
             const formData = new FormData();
-            formData.append("content", content); // campo esperado pelo backend
+            formData.append("content", content);
+
+            // Permitir até 2 imagens
             if (photoInput.files.length > 0) {
-                formData.append("img", photoInput.files[0]);
+                for (let i = 0; i < Math.min(photoInput.files.length, 2); i++) {
+                    formData.append("imgs", photoInput.files[i]);
+                }
             }
 
-            // debug: verificar o que está sendo enviado
+            // Debug: mostrar os campos enviados
             for (let pair of formData.entries()) {
                 console.log("Campo enviado:", pair[0], pair[1]);
             }
@@ -68,7 +72,7 @@
                     method: "POST",
                     headers: {
                         "Authorization": "Bearer " + token
-                        // NÃO coloque Content-Type, o browser faz isso automaticamente
+                        // Não coloque Content-Type manualmente
                     },
                     body: formData
                 });

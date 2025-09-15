@@ -75,7 +75,7 @@
         </div>
     </div>
 
-  <script type="module">
+<script type="module">
 import { showLoading, hideLoading } from './loading.js';
 
 const token = localStorage.getItem('token');
@@ -88,6 +88,7 @@ const searchInput = document.getElementById('search-input');
 let users = [];
 let currentUserIndex = null;
 
+// Buscar usuários do servidor
 async function fetchUsers() {
     try {
         showLoading();
@@ -106,14 +107,17 @@ async function fetchUsers() {
     }
 }
 
+// Renderiza a lista de usuários
 function renderUsers(list = users) {
     tableBody.innerHTML = '';
     if (list.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="9" class="text-center p-4">Nenhum usuário encontrado.</td></tr>';
         return;
     }
-    list.forEach((user, index) => {
+
+    list.forEach((user) => {
         const tr = document.createElement('tr');
+        tr.id = `user-row-${user.id}`;
         tr.innerHTML = `
             <td class="border px-4 py-2">${user.id}</td>
             <td class="border px-4 py-2">${user.username}</td>
@@ -124,12 +128,18 @@ function renderUsers(list = users) {
             <td class="border px-4 py-2">${user.linked_account_bank_name || ''} - ${user.linked_account_number || ''}</td>
             <td class="border px-4 py-2">${user.is_admin ? 'Sim' : 'Não'}</td>
             <td class="border px-4 py-2">
-                <button onclick="editUser(${index})" class="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">Editar</button>
+                <button class="edit-btn bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">Editar</button>
             </td>
         `;
         tableBody.appendChild(tr);
+
+        // Adiciona event listener ao botão EDITAR
+        tr.querySelector('.edit-btn').addEventListener('click', () => {
+            editUser(user.id);
+        });
     });
 }
+
 
 // Pesquisa por username ou código
 searchInput.addEventListener('input', () => {
@@ -141,10 +151,13 @@ searchInput.addEventListener('input', () => {
     renderUsers(filteredUsers);
 });
 
-// Editar usuário
-function editUser(index) {
-    currentUserIndex = index;
-    const user = users[index];
+// Editar usuário pelo ID
+function editUser(userId) {
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+
+    currentUserIndex = users.findIndex(u => u.id === userId);
+
     document.getElementById('edit-username').value = user.username;
     document.getElementById('edit-balance').value = user.balance;
     document.getElementById('edit-balance-recharge').value = user.balance_recharge;
@@ -152,7 +165,11 @@ function editUser(index) {
     document.getElementById('edit-user-id-code').value = user.user_id_code;
     document.getElementById('edit-linked-account').value = `${user.linked_account_bank_name || ''} - ${user.linked_account_number || ''}`;
     document.getElementById('edit-is-admin').checked = user.is_admin;
+
     editModal.classList.remove('hidden');
+
+    const userRow = document.getElementById(`user-row-${user.id}`);
+    if (userRow) userRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // Salvar edição
@@ -197,9 +214,9 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     window.location.href = 'login.html';
 });
 
-// Inicializa
 fetchUsers();
-// Tornar editUser acessível globalmente para os botões onclick
 window.editUser = editUser;
-
 </script>
+
+</body>
+</html>

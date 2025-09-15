@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             mainAmount = `Kz ${tx.amount.toFixed(2).replace('.', ',')}`;
                             details = `
                                 <span><strong>Pacote:</strong> ${tx.packageName}</span>
-                                <span><strong>ROI Esperado:</strong> ${tx.roi}</span>
+                                <span><strong>Retorno Esperado:</strong> ${tx.roi}</span>
                             `;
                             break;
                     }
