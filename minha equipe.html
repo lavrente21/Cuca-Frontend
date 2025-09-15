@@ -159,7 +159,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
         const userId = localStorage.getItem('referral_code') || localStorage.getItem('username'); 
-        const baseUrl = 'https://cucainvest.netlify.app/registro.html?invitation_code=';
+        const baseUrl = 'https://cucainvest.site/registro.html?invitation_code=';
         const invitationLink = baseUrl + userId;
 
         document.getElementById('hidden-invitation-link').value = invitationLink;

@@ -8,6 +8,7 @@ async function carregarPacotesCurtoPrazo() {
         container.innerHTML = "";
 
         const pacotesCurto = data.curto || [];
+
         if (pacotesCurto.length === 0) {
             container.innerHTML = "<p>Nenhum pacote de curto prazo disponível no momento.</p>";
             return;
@@ -47,32 +48,19 @@ async function carregarPacotesCurtoPrazo() {
                 const amount = pkg.min_investment;
 
                 try {
-                    // 1️⃣ Pega os pacotes ativos do usuário
+                    // ✅ Verifica se o usuário já comprou este pacote curto
                     const verifyResponse = await fetch("https://cuca-project-5.onrender.com/api/user/active-packages", {
                         headers: { "Authorization": `Bearer ${token}` }
                     });
                     const activePackages = await verifyResponse.json();
 
-                    // 2️⃣ Verifica se já comprou este pacote curto
-                    const alreadyBought = activePackages.some(p => p.name === pkg.name && p.type === 'curto');
+                    const alreadyBought = activePackages.some(p => p.id === pkg.id && p.type === 'curto');
                     if (alreadyBought) {
-                        alert(`Você já comprou este pacote de curto prazo (${pkg.name}).`);
+                        alert(`Você já comprou este pacote de curto prazo (${pkg.name}). Não é possível comprar novamente.`);
                         return;
                     }
 
-                    // 3️⃣ Verifica se possui o pacote correspondente de longo prazo
-                    const hasLongo = activePackages.some(p => {
-                        // compara pelo nome base do pacote (removendo "(VIP)" do curto)
-                        const baseNameCurto = pkg.name.replace(/\s*\(VIP\)/i, '').trim();
-                        return p.name.includes(baseNameCurto) && p.type === 'longo';
-                    });
-
-                    if (!hasLongo) {
-                        alert(`Para comprar o pacote curto ${pkg.name}, você precisa ter o pacote longo correspondente ativo.`);
-                        return;
-                    }
-
-                    // 4️⃣ Compra permitida
+                    // Compra permitida
                     const investResponse = await fetch("https://cuca-project-5.onrender.com/api/invest", {
                         method: "POST",
                         headers: {

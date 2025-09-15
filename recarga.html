@@ -39,29 +39,52 @@
                 <input type="number" id="depositAmount" placeholder="Valor do Depósito" min="0" required>
             </div>
             <div class="value-options">
-                <button type="button" class="value-option-button">2000</button>
+                
                 <button type="button" class="value-option-button">3000</button>
-                <button type="button" class="value-option-button">5000</button>
+                <button type="button" class="value-option-button">5600</button>
                 <button type="button" class="value-option-button">7000</button>
                 <button type="button" class="value-option-button">10000</button>
-                <button type="button" class="value-option-button">15000</button>
-                <button type="button" class="value-option-button">30000</button>
-                <button type="button" class="value-option-button">50000</button>
-                <button type="button" class="value-option-button">100000</button>
-                <button type="button" class="value-option-button">200000</button>
-                <button type="button" class="value-option-button">500000</button>
-                <button type="button" class="value-option-button">1000000</button>
+                <button type="button" class="value-option-button">17600</button>
+                <button type="button" class="value-option-button">37600</button>
+                <button type="button" class="value-option-button">73600</button>
+                <button type="button" class="value-option-button">320000</button>
+                <button type="button" class="value-option-button">512000</button>
             </div>
 
             <p><p></p></p>
+
             <h2>Instruções Multicaixa Express / ATM </h2>
-            <h2>Pagamentos por referência</h2>
-            <ol>
-                <li>Entidade: 10116</li>
-                <li>Referência: 923217581</li>
-                <li>Valor: Conforme indicado acima.</li>
-            </ol>
-            <h2>O depósito reflete em 1 a 5 minutos. Caso não apareça, contacte Atendimento ao cliente.</h2>
+    <h2>Formas de Pagamentos</h2>
+
+
+    <button class="toggle-referral" type="button">BANCO BFA</button>
+<ol class="referral-list" style="display: none;">
+    <li>IBAN: 0006.0000.4281.3027.3012.3</li>
+    <li>TITULAR: LAVRENTI LOMBADI</li>
+</ol>
+<br><br>
+
+
+    <button class="toggle-referral" type="button">BANCO ATLÂNTICO</button>
+<ol class="referral-list" style="display: none;">
+    <li>IBAN: 0055.0000.2678.9919.1014.5</li>
+    <li>TITULAR: EDSON RESTINO</li>
+</ol>
+<br><br>
+
+
+
+
+
+<button class="toggle-referral" type="button">PAGAMENTOS POR REFERÊNCIA</button>
+<ol class="referral-list" style="display: none;">
+    <li>Entidade: 10116</li>
+    <li>Referência: 923217581</li>
+    <li>Valor: Conforme indicado acima.</li>
+</ol>
+
+<br><br>
+            <h2>O depósito reflete em 5 a 10 minutos. Caso não apareça, contacte Atendimento ao cliente.</h2>
             <label for="arquivo">Enviar comprovativo</label>
             <input type="file" id="arquivo" name="arquivo">
 
@@ -114,5 +137,29 @@
         <div class="spinner"></div>
         <p>Carregando...</p>
     </div>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleButtons = document.querySelectorAll(".toggle-referral");
+    const referralLists = document.querySelectorAll(".referral-list");
+
+    toggleButtons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+            const list = referralLists[index];
+            if (list.style.display === "none") {
+                list.style.display = "block";
+                button.textContent = "Esconder Detalhes da Referência";
+            } else {
+                list.style.display = "none";
+                // Volta ao texto original do botão
+                if(index === 0) button.textContent = "BANCO BFA";
+                if(index === 1) button.textContent = "BANCO ATLÂTINCO";
+                if(index === 2) button.textContent = "PAGAMENTOS POR REFERÊNCIA";
+            }
+        });
+    });
+});
+</script>
+
+
 </body>
 </html>
