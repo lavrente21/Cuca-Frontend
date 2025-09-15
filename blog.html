@@ -154,36 +154,34 @@
             }
 
             posts.forEach(post => {
-                const postCard = document.createElement('div');
-                postCard.className = 'post-card';
+    const postCard = document.createElement('div');
+    postCard.className = 'post-card';
 
-                let imagesHTML = '';
-                if (post.image_url) {
-                    imagesHTML += `<img src="https://cuca-project-5.onrender.com${post.image_url}" alt="Imagem do post">`;
-                }
-                if (post.image_url2) {
-                    imagesHTML += `<img src="https://cuca-project-5.onrender.com${post.image_url2}" alt="Imagem do post 2">`;
-                }
+    let imagesWrapper = '';
+    if (post.image_urls) {
+        const imageArray = JSON.parse(post.image_urls); // transforma JSON em array
+        if (imageArray.length > 0) {
+            const imagesHTML = imageArray.map(url => `<img src="https://cuca-project-5.onrender.com${url}" alt="Imagem do post">`).join('');
+            imagesWrapper = `<div class="post-images ${imageArray.length === 2 ? 'two-images' : ''}">${imagesHTML}</div>`;
+        }
+    }
 
-                // se tiver 2 imagens, aplica a classe "two-images"
-                const imagesWrapper = imagesHTML ? `<div class="post-images ${post.image_url && post.image_url2 ? 'two-images' : ''}">${imagesHTML}</div>` : '';
+    postCard.innerHTML = `
+        <div class="post-header">
+            <div class="post-avatar">${post.author.charAt(0).toUpperCase()}</div>
+            <div class="post-user-info">
+                <strong>${post.author}</strong>
+                <span>${new Date(post.published_at).toLocaleDateString()}</span>
+            </div>
+        </div>
+        <div class="post-content">
+            <p>${post.content}</p>
+            ${imagesWrapper}
+        </div>
+    `;
+    container.appendChild(postCard);
+});
 
-                postCard.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-avatar">${post.author.charAt(0).toUpperCase()}</div>
-                        <div class="post-user-info">
-                            <strong>${post.author}</strong>
-                            <span>${new Date(post.published_at).toLocaleDateString()}</span>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        
-                        <p>${post.content}</p>
-                        ${imagesWrapper}
-                    </div>
-                `;
-                container.appendChild(postCard);
-            });
         } catch (error) {
             console.error('Erro ao carregar posts:', error);
             document.getElementById('blog-posts-container').innerHTML = `<p>${error.message}</p>`;
