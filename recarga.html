@@ -60,7 +60,7 @@
     <button class="toggle-referral" type="button">BANCO BFA</button>
 <ol class="referral-list" style="display: none;">
     <li>IBAN: 0006.0000.4281.3027.3012.3</li>
-    <li>TITULAR: LAVRENTI LOMBADI </li>
+    <li>TITULAR: LAVRENTI LOMBADI</li>
 </ol>
 
 
@@ -71,10 +71,11 @@
 </ol>
 <br><br>
 
-<button class="toggle-referral" type="button">BANCO BIC</button>
+<button class="toggle-referral" type="button">PAGAMENTOS POR REFERÊNCIA</button>
 <ol class="referral-list" style="display: none;">
-    <li></li>
-    <li></li>
+    <li>Entidade: 10116</li>
+    <li>Referência: 924493889</li>
+    <li>Valor: Conforme indicado acima.</li>
 </ol>
 
 <br><br>
@@ -141,13 +142,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const list = referralLists[index];
             if (list.style.display === "none") {
                 list.style.display = "block";
-                button.textContent = "Esconder Detalhes";
+                button.textContent = "Esconder Detalhes da Referência";
             } else {
                 list.style.display = "none";
                 // Volta ao texto original do botão
                 if(index === 0) button.textContent = "BANCO BFA";
                 if(index === 1) button.textContent = "BANCO ATLÂTINCO";
-                if(index === 2) button.textContent = "BANCO BAI";
+                if(index === 2) button.textContent = "PAGAMENTOS POR REFERÊNCIA";
             }
         });
     });

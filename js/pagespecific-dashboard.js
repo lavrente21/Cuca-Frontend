@@ -47,53 +47,61 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==========================================================
     // Lógica para carregar os dados do utilizador
     // ==========================================================
-    async function loadUserData() {
-        console.log("pageSpecific-dashboard.js: loadUserData a ser executado.");
-        showLoading(true); // Mostra o carregamento
-        try {
-            console.log("pageSpecific-dashboard.js: A fazer requisição para /api/dashboard com token...");
-            const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${userToken}`, // Envia o JWT
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            console.log("pageSpecific-dashboard.js: Resposta do dashboard recebida:", response.status, data);
-
-            if (response.ok) {
-                if (displayUsername) displayUsername.innerText = data.username || 'Utilizador';
-                if (displayPhoneId) {
-                    // Removido o formato "092****", usei apenas o userIdCode
-                    displayPhoneId.innerText = `ID: ${data.userIdCode || 'N/A'}`; 
-                    localStorage.setItem('user_id_code', data.userIdCode); 
-                }
-                if (userInitialCircle && data.username) userInitialCircle.innerText = data.username.charAt(0).toUpperCase();
-
-                if (totalBalanceDisplay) totalBalanceDisplay.innerText = `Kz ${parseFloat(data.balance || 0).toFixed(2)}`;
-                if (investmentBalanceDisplay) investmentBalanceDisplay.innerText = `Kz ${parseFloat(data.balance_recharge || 0).toFixed(2)}`;
-                if (withdrawableBalanceDisplay) withdrawableBalanceDisplay.innerText = `Kz ${parseFloat(data.balance_withdraw || 0).toFixed(2)}`;
-            
-                console.log("pageSpecific-dashboard.js: Dados do dashboard atualizados na UI.");
-            } else {
-                console.error('pageSpecific-dashboard.js: Erro do servidor ao carregar dados:', data);
-                showMessage('Erro ao carregar dados do utilizador: ' + (data.message || 'Erro desconhecido.'), 2000);
-                if (response.status === 401 || response.status === 403) {
-                    console.log("pageSpecific-dashboard.js: Redirecionando para Login.html devido a erro de autenticação.");
-                    localStorage.clear(); // Limpa o token inválido
-                    setTimeout(() => { window.location.href = '/Login.html'; }, 1500);
-                }
+async function loadUserData() {
+    console.log("pageSpecific-dashboard.js: loadUserData a ser executado.");
+    showLoading(true); 
+    try {
+        console.log("pageSpecific-dashboard.js: A fazer requisição para /api/dashboard com token...");
+        const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${userToken}`,
+                'Content-Type': 'application/json'
             }
-        } catch (error) {
-            console.error('pageSpecific-dashboard.js: Erro na requisição de dados do utilizador (fetch):', error);
-            showMessage('Não foi possível conectar ao servidor para obter os dados do utilizador.', 2000);
-        } finally {
-            showLoading(false); // Esconde o carregamento
-            console.log("pageSpecific-dashboard.js: loadUserData finalizado.");
+        });
+
+        let data;
+        try {
+            data = await response.json(); // tenta parsear JSON
+        } catch {
+            data = {}; // evita quebrar se não for JSON
         }
+
+        console.log("pageSpecific-dashboard.js: Resposta do dashboard recebida:", response.status, data);
+
+        if (response.ok) {
+            if (displayUsername) displayUsername.innerText = data.username || 'Utilizador';
+            if (displayPhoneId) {
+                displayPhoneId.innerText = `ID: ${data.userIdCode || 'N/A'}`; 
+                localStorage.setItem('user_id_code', data.userIdCode); 
+            }
+            if (userInitialCircle && data.username) userInitialCircle.innerText = data.username.charAt(0).toUpperCase();
+
+            if (totalBalanceDisplay) totalBalanceDisplay.innerText = `Kz ${parseFloat(data.balance || 0).toFixed(2)}`;
+            if (investmentBalanceDisplay) investmentBalanceDisplay.innerText = `Kz ${parseFloat(data.balance_recharge || 0).toFixed(2)}`;
+            if (withdrawableBalanceDisplay) withdrawableBalanceDisplay.innerText = `Kz ${parseFloat(data.balance_withdraw || 0).toFixed(2)}`;
+        
+            console.log("pageSpecific-dashboard.js: Dados do dashboard atualizados na UI.");
+        } else {
+            console.error('pageSpecific-dashboard.js: Erro do servidor ao carregar dados:', data);
+            
+            if (response.status === 401 || response.status === 403) {
+                console.warn("⚠️ Autenticação falhou, redirecionando para Login...");
+                localStorage.clear(); 
+                window.location.href = '/Login.html'; // 🔥 redireciona direto
+                return;
+            }
+
+            showMessage('Erro ao carregar dados do utilizador: ' + (data.message || 'Erro desconhecido.'), 2000);
+        }
+    } catch (error) {
+        console.error('pageSpecific-dashboard.js: Erro na requisição de dados do utilizador (fetch):', error);
+        showMessage('Não foi possível conectar ao servidor para obter os dados do utilizador.', 2000);
+    } finally {
+        showLoading(false);
+        console.log("pageSpecific-dashboard.js: loadUserData finalizado.");
     }
+}
 
     // Chama a função para carregar os dados do utilizador ao carregar a página
     await loadUserData();
